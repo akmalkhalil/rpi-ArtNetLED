@@ -10,6 +10,7 @@ class ArtNetNode(object):
         # TODO: make sure int is entered
 
         self.SOCKET = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.SOCKET.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.SOCKET.bind((self.UDP_IP, self.PORT))
 
     
@@ -26,6 +27,7 @@ class ArtNetNode(object):
             return self.SOCKET.recv(bufferSize)
     
     def receive(self):
+        print(self.UDP_IP, self.PORT)
         raw = self.checkReceive()
         data = {
             "head" : raw[0:8],
@@ -56,7 +58,10 @@ class ArtNetNode(object):
 
 
 if __name__ == "__main__":
-    node = ArtNetNode("192.168.0.71", 6454) # TODO: get IP from systems
+#    hostname = socket.gethostname()
+#    ipaddress = socket.gethostbyname(hostname)
+#    print("IP Address:  ", ipaddress)
+    node = ArtNetNode("192.168.0.51", 6454) # TODO: get IP from systems
     # For running on windows, python requires access through firewall
     artnetData = node.receive()
     print("DMX information recieved", artnetData["ldata"])
