@@ -1,24 +1,23 @@
 # rpi-ArtNetLED
 Using raspberry pi to receive ArtNet protocol to control LED strips
+For current set up, flask web interface and LED controller are ran independantly/one does not need to be active for the other
 
 ## myArtNet.py
+Contains a class description of an ArtNetNode object
+
+## webUI.py
+Flask based web interface to set config.ini options for ArtNet Raspberry Pi LED Controller.
+Use this to set address/universe of pi and number of LEDs used. Also allows you to give the pi a name :).
+
+## artnedLEDController.py
+Uses ArtNetNode class to receive control information and controls pixels
+Needs to be ran with sudo to control LEDs
+
 
 ## Big TODOs:
- - create flask server to set number LEDs and DMX address of first pixel in web interface
-    - have an options.py or options.txt file which has these options set in them
+ - start up artnetLEDController from webUI
  - add option in web interface to include "macros" or not which are precoded effects
- - use doctest or some sort of automated testing 
+ - use doctest or some sort of automated testing before project starts to get too big
 
 
-## Old
-Originally I tried using OLA but found that it was python2 based and the code contained a lot of C++ as well
-Realised artnet receiving's not that hard to implement so I went and did it myself giving me more control and a smaller code base
-
-https://github.com/OpenLightingProject/ola
-
-I've tried following this https://www.openlighting.org/ola/tutorials/ola-led-pixels/
-it uses ws2801 LEDs whereas I have ws2812.
-
-python2 ws2812x library
-https://github.com/rpi-ws281x/rpi-ws281x-python/
 

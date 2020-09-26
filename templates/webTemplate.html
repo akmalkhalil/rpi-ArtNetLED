@@ -1,0 +1,30 @@
+<html>
+    <head>
+
+    </head>
+
+    <body>
+        Hello and welcome to your web interface for {{ name }}'s RPi LED ArtNet Controller
+        <br/>
+        TODO: buttons to start artnent receiver/button to stop
+
+        <h3>Update details</h3>
+
+        <form method = POST>
+            <label>RPi Name:</label> <input name="inputName" type="text" value="{{ name }}"> <br/>
+            <label>DMX Address:</label> <input name="address" type="number" value={{ addr }}> <br/>
+            <label>Unviverse:</label> <input name="universe" type="number" value={{ univ }}> <br/>
+            <label>LED Type</label> <input name="type" type="text" value="ws2801x" disabled> <br/>
+            <label>Number of LEDs</label> <input name="num" type="number" value={{ num }}> <br/>
+            TODO:
+            <label>Control pin</label> <input type=number value=18 disabled> <br/>
+            <label>Auto start Artnet on boot</label><br>
+            <input type="submit" value="Update">
+        </form>
+
+
+        <h3>DMX values</h3>
+        TODO:
+    </body>
+
+</html>
