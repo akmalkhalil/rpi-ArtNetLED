@@ -7,6 +7,7 @@ config.read("conf.ini")
 
 NUM_PIXELS = config["artnetNode"]["numled"]
 pixels = neopixel.NeoPixel(board.D18, NUM_PIXELS, brightness = 0.5)
+# TODO: Add brightness to config
 
 node = ArtNetNode("192.168.0.51", 6454) # TODO: sys. get IP
 address = config["artnetNode"]["startaddr"]

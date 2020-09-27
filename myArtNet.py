@@ -3,20 +3,23 @@ from sys import argv as ARGV
 
 class ArtNetNode(object):
     
-    def __init__(self, ip, port):
+    def __init__(self, ip, port, testing = False):
         self.UDP_IP = ip
         # TODO: IP address validation
         self.PORT = port
         # TODO: make sure int is entered
-
-        self.SOCKET = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.SOCKET.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.SOCKET.bind((self.UDP_IP, self.PORT))
+        self.testing = testing # I really don't know about this, I just added it so that I could run tests on methods without messing with ports and stuff on windows
+        
+        if not testing:
+            self.SOCKET = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            self.SOCKET.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            self.SOCKET.bind((self.UDP_IP, self.PORT))
 
     
     def transmit(self, targIP, data, isBinary = True): # I wish I could do overloading so could have a bdata and ldata method
         if not isBinary:
             data = self._list2bin(data)
+            return 0
         
 
 
@@ -45,14 +48,16 @@ class ArtNetNode(object):
 
         return data
     
-
+    # @param: a byte string, e.g. b'\x00\ff\x88'
+    # @return: an int list containg each byte from the string
     def _bin2list(self, binData):
+        # TODO: look into just using the list() method, I think that's all I need really
         listdata = []
         for i in range(len(binData)):
             listdata.append(binData[i])
         return listdata
     def _list2bin(self, listData):
-        pass
+        return bytes(listData)
 
 
 

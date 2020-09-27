@@ -1,13 +1,19 @@
 from flask import Flask, request, render_template
 import configparser
 
+
+# TODO: can I put this stuff in to if __name__ == "__main__ "
 app = Flask(__name__)
 
 config = configparser.ConfigParser()
 config.read("conf.ini")
 
+# Can be run to create a valid config file with default values already set up
+def initConf(fileName = "config.ini.example"):
+    pass
 
 def updateConf(form):
+    # TODO: form validation? seperate function for validation I think???
     global config
     config["artnetNode"]["name"] = form["inputName"]
     config["artnetNode"]["startaddr"] = form["address"]
