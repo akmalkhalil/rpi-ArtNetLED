@@ -52,6 +52,6 @@ Is currently pretty bare because I wanted to make sure I had the idea of testing
 ## Next big TODOs I want:
  - start up artnetLEDController from webUI
  - add option in web interface to include "macros" or not which are precoded effects
-
+ - "register" IP addresses of other pis running this software so that they can all be configured from one web interface rather than logging in to each
 
 
