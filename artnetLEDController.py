@@ -12,6 +12,8 @@ pixels = neopixel.NeoPixel(board.D18, NUM_PIXELS, brightness = 0.5)
 node = ArtNetNode("192.168.0.51", 6454) # TODO: sys. get IP
 address = config["artnetNode"]["startaddr"]
 incMacros = bool(config["artnetNode"]["macros"])
+if incMacros:
+    import macros
 
 def runMacro(dmxVal):
     pass
