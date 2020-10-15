@@ -19,7 +19,11 @@ def updateConf(form):
     config["artnetNode"]["startaddr"] = form["address"]
     config["artnetNode"]["dmxuniverse"] = form["universe"]
     #config["artnetNode"]["type"] = form["type"]
-    config["artnetNode"]["numled"] = form["num"]
+    config["artnetNode"]["numled"] = form["num"]    
+    if (form.get("macros") == "True"):
+        config["artnetNode"]["macros"] = '1'
+    else:
+        config["artnetNode"]["macros"] = '0'
     with open("conf.ini", 'w') as confFile:
         config.write(confFile)
 
@@ -27,14 +31,16 @@ def updateConf(form):
 def index():
     global name
     if request.method == "POST":
+        print(request.form.get("macros"))
         updateConf(request.form)
         print("Config Updated")
 
     return render_template("webTemplate.html", 
-                            name = config["artnetNode"]["name"], 
-                            num  = config["artnetNode"]["numled"],
-                            addr = config["artnetNode"]["startaddr"],
-                            univ = config["artnetNode"]["dmxuniverse"],
+                            name  = config["artnetNode"]["name"], 
+                            num   = config["artnetNode"]["numled"],
+                            addr  = config["artnetNode"]["startaddr"],
+                            univ  = config["artnetNode"]["dmxuniverse"],
+                            macros= config["artnetNode"]["macros"],
                             )
 
 

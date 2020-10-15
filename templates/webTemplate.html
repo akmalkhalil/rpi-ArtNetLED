@@ -16,6 +16,7 @@
             <label>Unviverse:</label> <input name="universe" type="number" value={{ univ }}> <br/>
             <label>LED Type</label> <input name="type" type="text" value="ws2801x" disabled> <br/>
             <label>Number of LEDs</label> <input name="num" type="number" value={{ num }}> <br/>
+            <label>Include macros</label> <input name="macros" type="checkbox" value="True" {% if macros == "1" %}checked{% endif %}> <br/>
             TODO:
             <label>Control pin</label> <input type=number value=18 disabled> <br/>
             <label>Auto start Artnet on boot</label><br>
