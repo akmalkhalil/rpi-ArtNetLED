@@ -33,7 +33,7 @@ class TestNodeMethods(unittest.TestCase):
 # webUI.py
 # TODO: need to decide on how errors will be returned to user and for testing -> woo for TDD
 # TODO: test updateconf, need to add a load of data validation there
-from webUI import updateConf
+from webUI import updateConf, validateConf
 from shutil import copyfile
 
 class testWebUIFuncs(unittest.TestCase):
@@ -44,10 +44,16 @@ class testWebUIFuncs(unittest.TestCase):
         copyfile("config/conf.ini", "config/confLive.ini.copy")
         copyfile("config/conf.ini.default", "config/conf.ini")
         self.testForm = {
-            "inputName" : "",
-            "address" : "",
-            "universe": "",
-            "num" : "",
+            "inputName" : "Test Name",
+            "address" : "100",
+            "universe": "2",
+            "num" : "50",
+        }
+        self.testForm2 = {
+            "inputName" : "Test Name2",
+            "address" : "1",
+            "universe": "1",
+            "num" : "1",
         }
         # v v v v v 
         # TODO: don't test with the conf.ini file, have a test conf file that's edited and changed etc
@@ -61,27 +67,83 @@ class testWebUIFuncs(unittest.TestCase):
     # Test default conf file is updated correctly, 
     # trying different conf options, and number of options updated in one go
     def testUpdateConf(self):
-        self.testForm["inputName"] = "Test Name"
-        self.testForm["address"]   = "100"
-        self.testForm["universe"]  = "2"
-        self.testForm["num"]       = "50"
-
         updateConf(self.testForm)
-        # TODO: uhh, need to read the file and see if the file reads as expected
-        # can do a normal read rather than using the configparser library methinks
+
+        f = open("config/conf.ini")
+        lines = f.readlines()
+        f.close()
+        # TODO: Look in to a better way to do this
+        expected = [
+            "[artnetNode]\n",
+            "name = Test Name\n",
+            "numled = 50\n",
+            "startaddr = 100\n",
+            "dmxuniverse = 2\n",
+            "\n"
+        ]
+        self.assertEqual(lines, expected)
         
-
-    # Test that if trying to update a non-supported config option fails
-    def testUpdateConfFails(self):
-        self.skipTest("Not set up")
-        pass
+    def testValidateConfPass(self):
+        err = validateConf(self.testForm)
+        self.assertEqual(err,[])
     
-    def testUpdateConfValidation(self):
-        self.skipTest("Not set up")
-        pass
+    # Tests different cases of address to see if it errors or not
+    def testValidateAddressSimple(self):
+        testAdresses = {"hi":False, "True":False, "\n":False,
+        -1:False,0:False,1:True,100:True,509:True,510:True,511:False,512:False,513:False}
+        for case  in testAdresses.keys():
+            with self.subTest(msg = "case: "+str(case)):
+                self.testForm2["address"] = str(case)
+                err = validateConf(self.testForm2)
+                if (testAdresses[case]): # ie. expecting to pass/no errors
+                    self.assertEqual(err, [])
+                else: # ie. expecting at least one error
+                    self.assertGreater(len(err), 0)
+    
+    # Tests different addresses to see if error returned is as expected
+    def testValidateAddress(self):
+        self.subTest(msg = "Testing not a number")
+        expected = ["Address must be a number"]
+        self.testForm["address"] = "hi"
+        err = validateConf(self.testForm)
+        self.assertEqual(err, expected)
 
-    def test512Limit1(self):
-        self.skipTest("Not set up")
+        self.subTest(msg = "Testing out of range")
+        expected = ["Address must be in range in range 1-512 inclusive"]
+        self.testForm["address"] = "0"
+        err = validateConf(self.testForm)
+        self.assertEqual(err, expected) # code repetition, but I like how I'm organising subtests
+        self.testForm["address"] = "-1"
+        err = validateConf(self.testForm)
+        self.assertEqual(err, expected)
+        self.testForm["address"] = "513"
+        err = validateConf(self.testForm)
+        self.assertEqual(err, expected)
+
+    def testValidateNum(self):
+        self.subTest(msg = "Testing success cases")
+
+
+        self.subTest(msg = "Testing failure cases")
+        expected = ["Number of pixels must be an integer"]
+
+        self.subTest(msg = "Testing num pixels fits within address-512")
+        self.testForm2["address"] = "1"
+        self.testForm2["num"] = 170 # This one will pass
+        err = validateConf(self.testForm2)
+        self.assertEqual(err, [])
+        expected = ["Too many pixels or too high address"]
+        self.testForm2["num"] = 171
+        err = validateConf(self.testForm2)
+        self.assertEqual(err, expected)
+        
+        self.testForm2["address"] = 501
+        self.testForm2["num"] = 4
+        err = validateConf(self.testForm2)
+        self.assertEqual(err, [])
+        self.testForm2["num"] = 5
+        self.assertEqual(err, expected)
+
     
 
 
@@ -103,5 +165,6 @@ if __name__ == "__main__":
             unittest.main()
         except KeyboardInterrupt:
             pass
+            # Do I need to run the tear down methods???
     
     print("Quitting tests")
