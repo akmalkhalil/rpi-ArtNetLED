@@ -1,0 +1,6 @@
+[artnetNode]
+name = R-Pi
+numled = 10
+startaddr = 1
+dmxuniverse = 1
+

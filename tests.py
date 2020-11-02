@@ -31,19 +31,45 @@ class TestNodeMethods(unittest.TestCase):
 
 
 # webUI.py
-# TODO: test updateconf, need to add a load of data validation there, so maybe use TDD
+# TODO: need to decide on how errors will be returned to user and for testing -> woo for TDD
+# TODO: test updateconf, need to add a load of data validation there
 from webUI import updateConf
+from shutil import copyfile
 
 class testWebUIFuncs(unittest.TestCase):
+    # setUp() is run before every test
     def setUp(self):
-        pass
-        #TODO: set up test config file
+        #copyfile("config/conf.ini.default", "config/conf.ini.test")
+        # Hmm but all the code looks at conf.ini
+        copyfile("config/conf.ini", "config/confLive.ini.copy")
+        copyfile("config/conf.ini.default", "config/conf.ini")
+        self.testForm = {
+            "inputName" : "",
+            "address" : "",
+            "universe": "",
+            "num" : "",
+        }
+        # v v v v v 
+        # TODO: don't test with the conf.ini file, have a test conf file that's edited and changed etc
+        # ^ ^ ^ ^ ^ 
+        # I know how I'm doing it rn is bad but I want to focus on writing tests and not restructing my code yet
+        # this is in a branch, I will sort this before I merge to master
+    # tearDown is run after every test
+    def tearDown(self):
+        copyfile("config/confLive.ini.copy", "config/conf.ini")
 
     # Test default conf file is updated correctly, 
     # trying different conf options, and number of options updated in one go
     def testUpdateConf(self):
-        self.skipTest("Not set up")
-        pass
+        self.testForm["inputName"] = "Test Name"
+        self.testForm["address"]   = "100"
+        self.testForm["universe"]  = "2"
+        self.testForm["num"]       = "50"
+
+        updateConf(self.testForm)
+        # TODO: uhh, need to read the file and see if the file reads as expected
+        # can do a normal read rather than using the configparser library methinks
+        
 
     # Test that if trying to update a non-supported config option fails
     def testUpdateConfFails(self):
@@ -53,6 +79,9 @@ class testWebUIFuncs(unittest.TestCase):
     def testUpdateConfValidation(self):
         self.skipTest("Not set up")
         pass
+
+    def test512Limit1(self):
+        self.skipTest("Not set up")
     
 
 
@@ -64,4 +93,15 @@ class testWebUIFuncs(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    print(">>> NOTE <<<")
+    #print("Running tests may revert config to default")
+    print("confLive.ini.copy will be created and overwritten with a copy of the config file.\nIf you have a file with this name, do not continue.")
+
+    inp = input("Enter y to continue:  ")
+    if (inp == 'y'):
+        try:
+            unittest.main()
+        except KeyboardInterrupt:
+            pass
+    
+    print("Quitting tests")

@@ -2,11 +2,12 @@ from flask import Flask, request, render_template
 import configparser
 
 
-# TODO: can I put this stuff in to if __name__ == "__main__ "
+# TODO: can I put this stuff in to if __name__ == "__main__ "?
 app = Flask(__name__)
 
+confFileName = "config/conf.ini"
 config = configparser.ConfigParser()
-config.read("conf.ini")
+config.read(confFileName)
 
 # Can be run to create a valid config file with default values already set up
 def initConf(fileName = "config.ini.example"):
@@ -20,7 +21,7 @@ def updateConf(form):
     config["artnetNode"]["dmxuniverse"] = form["universe"]
     #config["artnetNode"]["type"] = form["type"]
     config["artnetNode"]["numled"] = form["num"]
-    with open("conf.ini", 'w') as confFile:
+    with open(confFileName, 'w') as confFile:
         config.write(confFile)
 
 @app.route("/", methods = ['GET', 'POST'])
