@@ -6,7 +6,9 @@ import unittest
 import random
 from config import Config
 
-# myArtNet.py
+####################
+###  myArtNet.py ###
+####################
 from myArtNet import ArtNetNode
 
 class TestNodeMethods(unittest.TestCase):
@@ -30,19 +32,19 @@ class TestNodeMethods(unittest.TestCase):
         res = self.node._list2bin(l)
         self.assertEqual(res, b'Art-Net\x00\x00P\x00\x0e[\x00\x00\x00\x000\xff\x00')
 
-
-# webUI.py
-# TODO: need to decide on how errors will be returned to user and for testing -> woo for TDD
-# TODO: test updateconf, need to add a load of data validation there
-#from webUI import updateConf, validateConf
+####################
+###   webUI.py   ###
+####################
+# Some of these tests fail because they've not been implemented yet. TDD
 from webUI import updateSettings, validateSettings
 from shutil import copyfile
 
 class testWebUIFuncs(unittest.TestCase):
     # setUp() is run before every test
     def setUp(self):
-        copyfile("config/settings.ini", "config/settingsLive.ini.copy")
-        copyfile("config/settings.ini.default", "config/settings.ini")
+        # copyfile("config/settings.ini", "config/settingsLive.ini.copy")
+        # copyfile("config/settings.ini.default", "config/settings.ini")
+        # TODO: webUI.initSettings for the test file
         self.testForm = {
             "inputName" : "Test Name",
             "address" : "100",
@@ -55,21 +57,17 @@ class testWebUIFuncs(unittest.TestCase):
             "universe": "1",
             "num" : "1",
         }
-        # v v v v v 
-        # TODO: don't test with the conf.ini file, have a test conf file that's edited and changed etc
-        # ^ ^ ^ ^ ^ 
-        # I know how I'm doing it rn is bad but I want to focus on writing tests and not restructing my code yet
-        # this is in a branch, I will sort this before I merge to master
     # tearDown is run after every test
     def tearDown(self):
-        copyfile("config/settingsLive.ini.copy", "config/settings.ini")
+        #copyfile("config/settingsLive.ini.copy", "config/settings.ini")
+        pass
 
     # Test default conf file is updated correctly, 
     # trying different conf options, and number of options updated in one go
     def testUpdateConf(self):
         updateSettings(self.testForm)
 
-        f = open("config/settings.ini")
+        f = open(Config.settingsFileName)
         lines = f.readlines()
         f.close()
         # TODO: Look in to a better way to do this
@@ -87,7 +85,7 @@ class testWebUIFuncs(unittest.TestCase):
         err = validateSettings(self.testForm)
         self.assertEqual(err,[])
     
-    # Tests different cases of address to see if it errors or not
+    # Just tests if error occurs or not, not if correct error
     def testValidateAddressSimple(self):
         testAdresses = {"hi":False, "True":False, "\n":False,
         -1:False,0:False,1:True,100:True,509:True,510:True,511:False,512:False,513:False}
@@ -155,16 +153,16 @@ class testWebUIFuncs(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    print(">>> NOTE <<<")
-    #print("Running tests may revert config to default")
-    print("confLive.ini.copy will be created and overwritten with a copy of the config file.\nIf you have a file with this name, do not continue.")
-
-    inp = input("Enter y to continue:  ")
-    if (inp == 'y'):
-        try:
-            unittest.main()
-        except KeyboardInterrupt:
-            pass
-            # Do I need to run the tear down methods???
+    if Config.TESTING:
+        # print(">>> NOTE <<<\n")
+        inp = input("Enter y to continue:  ")
+        if (inp == 'y'):
+            try:
+                unittest.main()
+            except KeyboardInterrupt:
+                pass
+                # Do I need to run the tear down methods???
+    else:
+        print("In order to run tests please first change change the TESTING variable in config/Config.py")
     
     print("Quitting tests")

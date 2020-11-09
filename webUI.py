@@ -1,13 +1,14 @@
 from flask import Flask, request, render_template
 import configparser
+from config.Config import settingsFileName
 
 
 # TODO: can I put this stuff in to if __name__ == "__main__ "?
 app = Flask(__name__)
 
-settingsFileName = "config/settings.ini"
+
 settingsIni = configparser.ConfigParser()
-settingsIni.read(settingsFileName)
+foo = settingsIni.read(settingsFileName)
 
 # Can be run to create a valid settings file with default values already set up
 def initSettings(fileName = "settings.ini.example"):

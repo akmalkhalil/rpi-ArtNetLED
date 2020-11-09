@@ -1,17 +1,17 @@
-# Created so that I can set a variable whether I'm running tests or actually running a server
 
 
-
-
-
-### Edit variables below ###
-TESTING = False
+### Edit variables below as needed###
+TESTING = True
+DEBUG = TESTING
 
 
 
 
 ### Do not edit past this point ###
 if TESTING:
-    settingsFile = "settingsTest.ini"
+    settingsFileName = "config/settingsTest.ini"
 else:
-    settingsFile = "settings.ini"
+    settingsFileName = "config/settings.ini"
+
+# TODO: see if those files exist, if not then generate them
+# TODO: add those files to .gitignore, once the above todo is done
