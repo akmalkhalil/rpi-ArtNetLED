@@ -5,26 +5,25 @@ import configparser
 # TODO: can I put this stuff in to if __name__ == "__main__ "?
 app = Flask(__name__)
 
-confFileName = "config/conf.ini"
-config = configparser.ConfigParser()
-config.read(confFileName)
+settingsFileName = "config/settings.ini"
+settingsIni = configparser.ConfigParser()
+settingsIni.read(settingsFileName)
 
-# Can be run to create a valid config file with default values already set up
-def initConf(fileName = "config.ini.example"):
+# Can be run to create a valid settings file with default values already set up
+def initSettings(fileName = "settings.ini.example"):
     pass
 
-def updateConf(form):
+def updateSettings(form):
     # TODO: form validation? seperate function for validation I think???
-    global config
-    config["artnetNode"]["name"] = form["inputName"]
-    config["artnetNode"]["startaddr"] = form["address"]
-    config["artnetNode"]["dmxuniverse"] = form["universe"]
-    #config["artnetNode"]["type"] = form["type"]
-    config["artnetNode"]["numled"] = form["num"]
-    with open(confFileName, 'w') as confFile:
-        config.write(confFile)
+    settingsIni["artnetNode"]["name"] = form["inputName"]
+    settingsIni["artnetNode"]["startaddr"] = form["address"]
+    settingsIni["artnetNode"]["dmxuniverse"] = form["universe"]
+    #settingsIni["artnetNode"]["type"] = form["type"]
+    settingsIni["artnetNode"]["numled"] = form["num"]
+    with open(settingsFileName, 'w') as setFile:
+        settingsIni.write(setFile)
 
-def validateConf(form):
+def validateSettings(form):
     errors = []
 
     try:
@@ -49,14 +48,14 @@ def validateConf(form):
 def index():
     global name
     if request.method == "POST":
-        updateConf(request.form)
-        print("Config Updated")
+        updateSettings(request.form)
+        print("Settings Updated")
 
     return render_template("webTemplate.html", 
-                            name = config["artnetNode"]["name"], 
-                            num  = config["artnetNode"]["numled"],
-                            addr = config["artnetNode"]["startaddr"],
-                            univ = config["artnetNode"]["dmxuniverse"],
+                            name = settingsIni["artnetNode"]["name"], 
+                            num  = settingsIni["artnetNode"]["numled"],
+                            addr = settingsIni["artnetNode"]["startaddr"],
+                            univ = settingsIni["artnetNode"]["dmxuniverse"],
                             )
 
 

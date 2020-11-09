@@ -4,6 +4,7 @@
 import unittest
 # https://realpython.com/python-testing/#writing-your-first-test
 import random
+from config import Config
 
 # myArtNet.py
 from myArtNet import ArtNetNode
@@ -33,16 +34,15 @@ class TestNodeMethods(unittest.TestCase):
 # webUI.py
 # TODO: need to decide on how errors will be returned to user and for testing -> woo for TDD
 # TODO: test updateconf, need to add a load of data validation there
-from webUI import updateConf, validateConf
+#from webUI import updateConf, validateConf
+from webUI import updateSettings, validateSettings
 from shutil import copyfile
 
 class testWebUIFuncs(unittest.TestCase):
     # setUp() is run before every test
     def setUp(self):
-        #copyfile("config/conf.ini.default", "config/conf.ini.test")
-        # Hmm but all the code looks at conf.ini
-        copyfile("config/conf.ini", "config/confLive.ini.copy")
-        copyfile("config/conf.ini.default", "config/conf.ini")
+        copyfile("config/settings.ini", "config/settingsLive.ini.copy")
+        copyfile("config/settings.ini.default", "config/settings.ini")
         self.testForm = {
             "inputName" : "Test Name",
             "address" : "100",
@@ -62,14 +62,14 @@ class testWebUIFuncs(unittest.TestCase):
         # this is in a branch, I will sort this before I merge to master
     # tearDown is run after every test
     def tearDown(self):
-        copyfile("config/confLive.ini.copy", "config/conf.ini")
+        copyfile("config/settingsLive.ini.copy", "config/settings.ini")
 
     # Test default conf file is updated correctly, 
     # trying different conf options, and number of options updated in one go
     def testUpdateConf(self):
-        updateConf(self.testForm)
+        updateSettings(self.testForm)
 
-        f = open("config/conf.ini")
+        f = open("config/settings.ini")
         lines = f.readlines()
         f.close()
         # TODO: Look in to a better way to do this
@@ -84,7 +84,7 @@ class testWebUIFuncs(unittest.TestCase):
         self.assertEqual(lines, expected)
         
     def testValidateConfPass(self):
-        err = validateConf(self.testForm)
+        err = validateSettings(self.testForm)
         self.assertEqual(err,[])
     
     # Tests different cases of address to see if it errors or not
@@ -94,7 +94,7 @@ class testWebUIFuncs(unittest.TestCase):
         for case  in testAdresses.keys():
             with self.subTest(msg = "case: "+str(case)):
                 self.testForm2["address"] = str(case)
-                err = validateConf(self.testForm2)
+                err = validateSettings(self.testForm2)
                 if (testAdresses[case]): # ie. expecting to pass/no errors
                     self.assertEqual(err, [])
                 else: # ie. expecting at least one error
@@ -105,19 +105,19 @@ class testWebUIFuncs(unittest.TestCase):
         self.subTest(msg = "Testing not a number")
         expected = ["Address must be a number"]
         self.testForm["address"] = "hi"
-        err = validateConf(self.testForm)
+        err = validateSettings(self.testForm)
         self.assertEqual(err, expected)
 
         self.subTest(msg = "Testing out of range")
         expected = ["Address must be in range in range 1-512 inclusive"]
         self.testForm["address"] = "0"
-        err = validateConf(self.testForm)
+        err = validateSettings(self.testForm)
         self.assertEqual(err, expected) # code repetition, but I like how I'm organising subtests
         self.testForm["address"] = "-1"
-        err = validateConf(self.testForm)
+        err = validateSettings(self.testForm)
         self.assertEqual(err, expected)
         self.testForm["address"] = "513"
-        err = validateConf(self.testForm)
+        err = validateSettings(self.testForm)
         self.assertEqual(err, expected)
 
     def testValidateNum(self):
@@ -130,16 +130,16 @@ class testWebUIFuncs(unittest.TestCase):
         self.subTest(msg = "Testing num pixels fits within address-512")
         self.testForm2["address"] = "1"
         self.testForm2["num"] = 170 # This one will pass
-        err = validateConf(self.testForm2)
+        err = validateSettings(self.testForm2)
         self.assertEqual(err, [])
         expected = ["Too many pixels or too high address"]
         self.testForm2["num"] = 171
-        err = validateConf(self.testForm2)
+        err = validateSettings(self.testForm2)
         self.assertEqual(err, expected)
         
         self.testForm2["address"] = 501
         self.testForm2["num"] = 4
-        err = validateConf(self.testForm2)
+        err = validateSettings(self.testForm2)
         self.assertEqual(err, [])
         self.testForm2["num"] = 5
         self.assertEqual(err, expected)
