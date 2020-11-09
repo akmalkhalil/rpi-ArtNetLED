@@ -1,24 +1,42 @@
 <html>
     <head>
-
+        <script> 
+        // turn ArtNet LED Controller on/off
+        function toggleALC(){
+            // TODO: get confirmation
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "/toggleALC");
+            xhr.send();
+            setTimeout(location.reload(), 1000);
+            // This is real bad, it doesn't always update the text but an actual refresh will
+        }
+        </script>
     </head>
 
     <body>
         Hello and welcome to your web interface for {{ name }}'s RPi LED ArtNet Controller
         <br/>
-        TODO: buttons to start artnent receiver/button to stop
+        <label>ArtNet LED Controller:</label> 
+        {% if ALCRunning == true %}
+            Active
+        {% else %}
+            Inactive
+        {% endif %}
+        <button type="button" onclick="toggleALC()">Switch ArtNetController On/Off</button>
+        <br>
+        warning may need to mannually refreshpage to see change.<br>
+        DO NOT PRESS THAT BUTTON IN QUICK SUCCESSION (I don't really know what will happen, but threading stuff)
+
 
         <h3>Update details</h3>
-
         <form method = POST>
             <label>RPi Name:</label> <input name="inputName" type="text" value="{{ name }}"> <br/>
             <label>DMX Address:</label> <input name="address" type="number" value={{ addr }}> <br/>
             <label>Unviverse:</label> <input name="universe" type="number" value={{ univ }}> <br/>
             <label>LED Type</label> <input name="type" type="text" value="ws2801x" disabled> <br/>
             <label>Number of LEDs</label> <input name="num" type="number" value={{ num }}> <br/>
-            TODO:
             <label>Control pin</label> <input type=number value=18 disabled> <br/>
-            <label>Auto start Artnet on boot</label><br>
+            <label>Auto start Artnet on boot</label><input type="checkbox" disabled><br>
             <input type="submit" value="Update">
         </form>
 

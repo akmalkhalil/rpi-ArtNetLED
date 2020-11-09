@@ -1,7 +1,7 @@
 
 
 ### Edit variables below as needed###
-TESTING = True
+TESTING = False
 DEBUG = TESTING
 
 

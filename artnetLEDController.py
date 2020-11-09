@@ -15,8 +15,8 @@ pixels = neopixel.NeoPixel(board.D18, NUM_PIXELS, brightness = 0.5)
 node = ArtNetNode("192.168.0.51", 6454) # TODO: sys. get IP
 address = int(settingsIni["artnetNode"]["startaddr"])
 
-def main():
-    while True:
+def main(running):
+    while running:
         artnetData = node.receive()
         # TODO: change this in to a parseForWS281X() function. So that we have something to test and can try coding in different pixel strings?
         for i in range(address-1, address-1+NUM_PIXELS):
@@ -24,7 +24,9 @@ def main():
             g = artnetData["ldata"][i*3+1]
             b = artnetData["ldata"][i*3+2]
             pixels[i] = (r,g,b)
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    running = True
+    main(running)

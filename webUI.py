@@ -1,6 +1,10 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, redirect, url_for
 import configparser
 from config.Config import settingsFileName
+from threading import Thread
+#from artnetLEDController import main as ALCMain
+from threadTester import main as ALCMain
+from threadTester import stop as ALCStop
 
 
 # TODO: can I put this stuff in to if __name__ == "__main__ "?
@@ -9,6 +13,10 @@ app = Flask(__name__)
 
 settingsIni = configparser.ConfigParser()
 foo = settingsIni.read(settingsFileName)
+
+ALCRunning = False
+ALCThread = Thread(target = ALCMain)
+
 
 # Can be run to create a valid settings file with default values already set up
 def initSettings(fileName = "settings.ini.example"):
@@ -47,7 +55,7 @@ def validateSettings(form):
 
 @app.route("/", methods = ['GET', 'POST'])
 def index():
-    global name
+    global name, ALCRunning
     if request.method == "POST":
         updateSettings(request.form)
         print("Settings Updated")
@@ -57,6 +65,24 @@ def index():
                             num  = settingsIni["artnetNode"]["numled"],
                             addr = settingsIni["artnetNode"]["startaddr"],
                             univ = settingsIni["artnetNode"]["dmxuniverse"],
+                            ALCRunning = ALCRunning,
                             )
 
+@app.route("/test")
+def testPage():
+    return "Hello World!"
 
+@app.route("/toggleALC")
+def toggleALC():
+    global ALCRunning, ALCThread
+    print("toggl", ALCRunning)
+    ALCRunning = not ALCRunning
+    if ALCRunning:
+        ALCThread = Thread(target = ALCMain)
+        ALCThread.start()
+        print("STARTED THREAD")
+    else:
+        ALCStop()
+        ALCThread.join()
+        print("THREAD KILLED")
+    return redirect(url_for("testPage"))
