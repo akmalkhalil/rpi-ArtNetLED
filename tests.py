@@ -42,8 +42,6 @@ from shutil import copyfile
 class testWebUIFuncs(unittest.TestCase):
     # setUp() is run before every test
     def setUp(self):
-        # copyfile("config/settings.ini", "config/settingsLive.ini.copy")
-        # copyfile("config/settings.ini.default", "config/settings.ini")
         # TODO: webUI.initSettings for the test file
         self.testForm = {
             "inputName" : "Test Name",
@@ -59,7 +57,7 @@ class testWebUIFuncs(unittest.TestCase):
         }
     # tearDown is run after every test
     def tearDown(self):
-        #copyfile("config/settingsLive.ini.copy", "config/settings.ini")
+        # TODO: webUI.initSettings for the test file
         pass
 
     # Test default conf file is updated correctly, 
