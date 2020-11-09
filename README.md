@@ -32,7 +32,7 @@ sudo python3 arnetLEDController.py
  - sudo is required for the neopixel library to control the LEDs
 
 ## Files
-### myArtNet.py
+### ArtNetNode.py
 Contains a class description of an ArtNetNode object
 
 ### webUI.py

@@ -6,7 +6,7 @@ import unittest
 import random
 
 # myArtNet.py
-from myArtNet import ArtNetNode
+from ArtNetNode import ArtNetNode
 
 class TestNodeMethods(unittest.TestCase):
     def setUp(self):

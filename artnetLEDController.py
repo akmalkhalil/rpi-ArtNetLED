@@ -1,4 +1,4 @@
-from myArtNet import ArtNetNode
+from ArtNetNode import ArtNetNode
 import board, neopixel
 import configparser
 
