@@ -3,6 +3,7 @@ import configparser
 from config.Config import settingsFileName
 from threading import Thread
 #from artnetLEDController import main as ALCMain
+#from artnetLEDController import stopMain as ALCStop
 from threadTester import main as ALCMain
 from threadTester import stop as ALCStop
 
@@ -86,3 +87,12 @@ def toggleALC():
         ALCThread.join()
         print("THREAD KILLED")
     return redirect(url_for("testPage"))
+    # Ok new plan
+    # when button is pressed, load a new page that just says "wait"
+    # have a ready() function or wait til end of .join()
+    # then after we know it's done we send them back to the index page
+    # or
+    # hmm
+    # maybe we press the button and the button deactivates with JS
+    # JS polls server asking if action is complete, when it is the button reactivates
+    # I can do that right? I don't like a lot of JS though, worth considering at least

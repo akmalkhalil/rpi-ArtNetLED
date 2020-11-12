@@ -1,3 +1,4 @@
+# TODO: find source of this function, becuase I didn't come up with it
 import time, board, neopixel
 
 NUM_PIXELS = 30

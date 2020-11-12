@@ -1,0 +1,2 @@
+flask
+TODO: make a list of modules that need to be installed for python
