@@ -1,2 +1,8 @@
 flask
 TODO: make a list of modules that need to be installed for python
+rpi_ws281x
+adafruit-circuitpython-neopixel
+
+sudo python3 -m pip install --force-reinstall adafruit-blinka
+?
+https://learn.adafruit.com/neopixels-on-raspberry-pi/python-usage

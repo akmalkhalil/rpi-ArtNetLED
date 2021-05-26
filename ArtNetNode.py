@@ -10,7 +10,8 @@ class ArtNetNode(object):
         self.PORT = port
         # TODO: make sure an int is entered
         self.testing = testing # I really don't know about this, I just added it so that I could run tests on methods without messing with ports and stuff on windows
-        
+        self.universes = [0] # TODO: this will be a list of the universes this node is expecting. Then later it will check if the artnet data is in this list, else ignore
+
         if not testing:
             self.SOCKET = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             self.SOCKET.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -19,7 +20,8 @@ class ArtNetNode(object):
                 # TODO: This is currently noisy and needs looking in to
             else:
                 self.SOCKET.bind((self.UDP_IP, self.PORT))
-
+        
+        
     
     def transmit(self, targIP, data, isBinary = True): # I wish I could do overloading so could have a bdata and ldata method
         if not isBinary:
@@ -63,15 +65,24 @@ class ArtNetNode(object):
         return listdata
     def _list2bin(self, listData):
         return bytes(listData)
+    
+# https://stackoverflow.com/a/28950776
+def getIPAddressOfDevice():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        s.connect(('2.255.255.255', 1))
+        IP = s.getsockname()[0]
+    except Exception:
+        IP = '127.0.0.1'
+    finally:
+        s.close()
+    return IP
 
 
 
 
 if __name__ == "__main__":
-#    hostname = socket.gethostname()
-#    ipaddress = socket.gethostbyname(hostname)
-#    print("IP Address:  ", ipaddress)
-    node = ArtNetNode("192.168.0.51", 6454) # TODO: get IP from systems
+    node = ArtNetNode(getIPAddressOfDevice(), 6454)
     # For running on windows, python requires access through firewall
     artnetData = node.receive()
     print("DMX information recieved", artnetData["ldata"])
